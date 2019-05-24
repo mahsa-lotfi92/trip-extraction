@@ -6,8 +6,8 @@ import math
 
 
 def distance(origin, destination):
-    lat1, lon1 = origin
-    lat2, lon2 = destination
+    lat1, lon1 = origin.lat, origin.lng
+    lat2, lon2 = destination.lat, destination.lng
     radius = 6371 # km
 
     dlat = math.radians(lat2-lat1)
@@ -17,4 +17,4 @@ def distance(origin, destination):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     d = radius * c
 
-    return d
+    return d * 1000

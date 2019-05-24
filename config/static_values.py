@@ -1,2 +1,4 @@
+from datetime import timedelta
+
 IGNORE_DISTANCE = 15
-END_TIME_PENALTY = 3 * 60
+END_TIME_PENALTY = timedelta(minutes=3)
