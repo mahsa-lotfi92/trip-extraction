@@ -12,10 +12,12 @@ longer than 3 minutes
 
 
 #Run
+
 To run the project, in the root of projects, call:
 
     python extract_trips.py file_name
    
-   where file_name is the name of the file which contains waypoints.
+where file_name is the name of the file which contains waypoints.
+The file should be placed at the root of project.
    
    
