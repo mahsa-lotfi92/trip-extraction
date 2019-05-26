@@ -12,6 +12,9 @@ class WayPoint(NamedTuple):
 
     @staticmethod
     def create_from_dict(obj):
+        if not isinstance(obj, dict):
+            return None
+
         lat = obj['lat']
         lng = obj['lng']
         timestamp = datetime.strptime(obj['timestamp'], '%Y-%m-%dT%H:%M:%SZ')
