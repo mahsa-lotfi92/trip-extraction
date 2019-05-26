@@ -1,7 +1,7 @@
 from datetime import datetime
-from typing import NamedTuple
+from typing import NamedTuple, Dict
 
-from config.static_values import IGNORE_DISTANCE
+from log_book.config.static_values import IGNORE_DISTANCE
 from log_book.util.haversine import distance as haversine_distance
 
 
@@ -11,7 +11,7 @@ class WayPoint(NamedTuple):
     lng: float
 
     @staticmethod
-    def create_from_dict(obj):
+    def create_from_dict(obj: Dict):
         if not isinstance(obj, dict):
             return None
 
@@ -20,7 +20,7 @@ class WayPoint(NamedTuple):
         timestamp = datetime.strptime(obj['timestamp'], '%Y-%m-%dT%H:%M:%SZ')
         return WayPoint(timestamp=timestamp, lat=lat, lng=lng)
 
-    def __eq__(self, waypoint2) -> bool:
+    def is_near(self, waypoint2) -> bool:
         assert isinstance(waypoint2, WayPoint)
         return haversine_distance(self, waypoint2) <= IGNORE_DISTANCE
 

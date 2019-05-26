@@ -1,7 +1,7 @@
 from typing import Union
 
-from config.static_values import END_TIME_PENALTY, MAX_ACCEPTABLE_VELOCITY
 from log_book.application.abc_processor import ABCStreamProcessor
+from log_book.config.static_values import MAX_TIME_WITHOUT_MOVEMENT, MAX_ACCEPTABLE_VELOCITY
 from log_book.models.models import Trip, WayPoint, TripEntity
 from log_book.util.haversine import distance as haversine_distance
 
@@ -13,6 +13,10 @@ class StreamProcessor(ABCStreamProcessor):
         self.trip = TripEntity()
         self.way_points = []
         self.last_time_updated = None
+
+    def get_last_velocity(self, way_point: WayPoint):
+        time_passed = (way_point.timestamp-self.way_points[-1].timestamp).seconds
+        return haversine_distance(self.way_points[-1], way_point) / time_passed if time_passed > 0 else 0
 
     def update_distance(self):
         self.trip.distance += haversine_distance(self.way_points[-2], self.way_points[-1])
@@ -32,14 +36,12 @@ class StreamProcessor(ABCStreamProcessor):
         if len(self.way_points) == 0:
             self.way_points.append(waypoint)
 
-        elif (waypoint.timestamp-self.way_points[-1].timestamp).seconds > 0 and \
-             haversine_distance(self.way_points[-1], waypoint) / \
-                                (waypoint.timestamp-self.way_points[-1].timestamp).seconds > MAX_ACCEPTABLE_VELOCITY:
+        elif self.get_last_velocity(waypoint) > MAX_ACCEPTABLE_VELOCITY:
             pass
 
-        elif waypoint == self.way_points[-1]:
+        elif waypoint.is_near(self.way_points[-1]):
             if len(self.way_points) > 1 and \
-                                    waypoint.timestamp - self.way_points[-1].timestamp > END_TIME_PENALTY:
+                                    waypoint.timestamp - self.way_points[-1].timestamp > MAX_TIME_WITHOUT_MOVEMENT:
                 self.trip.end = self.way_points[-1]
                 return Trip(start=self.trip.start, end=self.trip.end, distance=self.trip.distance)
         else:
@@ -50,6 +52,7 @@ class StreamProcessor(ABCStreamProcessor):
 
             self.way_points.append(waypoint)
             self.update_distance()
+
         self.last_time_updated = waypoint.timestamp
         return None
 

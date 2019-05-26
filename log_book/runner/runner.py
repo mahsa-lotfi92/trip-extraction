@@ -2,7 +2,7 @@ import json
 import sys
 from datetime import datetime
 
-from log_book.runner.processor import process_waypoints
+from log_book.runner.processor import process_way_points
 
 
 class Encoder(json.JSONEncoder):
@@ -13,7 +13,7 @@ class Encoder(json.JSONEncoder):
 
 
 def runner():
-    if len(sys.argv) < 1:
+    if len(sys.argv) <= 1:
         print('Please provide a file name to read the waypoint data')
         return
 
@@ -23,7 +23,7 @@ def runner():
 
     with open(sys.argv[1]) as json_file:
         waypoints = json.load(json_file)
-        trips = process_waypoints(waypoints)
+        trips = process_way_points(waypoints)
         f = open("trips.json", 'w')
         f.write(json.dumps(trips, cls=Encoder))
         f.close()
