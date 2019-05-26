@@ -1,4 +1,4 @@
-# tripExtraction
+# Trip Extraction
 
 There are 5 roles to extract the trips from waypoints:
 - A vehicle may occasionally sends GPS updates, even if it not moving
@@ -14,7 +14,7 @@ longer than 3 minutes
 #Run
 To run the project, in the root of projects, call:
 
-    `python extract_trips.py file_name`
+    python extract_trips.py file_name
    
    where file_name is the name of the file which contains waypoints.
    
