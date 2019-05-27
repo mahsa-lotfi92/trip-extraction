@@ -28,7 +28,7 @@ class StreamProcessor(ABCStreamProcessor):
         self.last_time_updated = None
 
     def process_waypoint(self, waypoint: WayPoint) -> Union[Trip, None]:
-        if not waypoint:
+        if not isinstance(waypoint, WayPoint):
             return None
 
         if isinstance(self.trip.end, WayPoint):
