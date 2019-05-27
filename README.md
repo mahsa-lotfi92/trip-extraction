@@ -18,11 +18,13 @@ longer than 3 minutes
 
     source env_name/bin/activate
 
-4- Run:
+3- Run:
 
     pip install requirements.txt
-        
-3- To run the project, in the root of projects, call:
+    
+4- Create a file in root of project that contains waypoints data.
+   
+5- To run the project, in the root of projects, call:
 
     python extract_trips.py file_name
    
