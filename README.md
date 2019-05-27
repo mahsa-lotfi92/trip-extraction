@@ -12,8 +12,17 @@ longer than 3 minutes
 
 
 ## Run
+1- Create virtual environment with python3
 
-To run the project, in the root of projects, call:
+2- Activate virtual environment. 
+
+    source env_name/bin/activate
+
+4- Run:
+
+    pip install requirements.txt
+        
+3- To run the project, in the root of projects, call:
 
     python extract_trips.py file_name
    
