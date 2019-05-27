@@ -2,8 +2,9 @@ from typing import Union
 
 from log_book.application.abc_processor import ABCStreamProcessor
 from log_book.config.static_values import MAX_TIME_WITHOUT_MOVEMENT, MAX_ACCEPTABLE_VELOCITY
-from log_book.models.models import Trip, WayPoint, TripEntity
+from log_book.models.models import Trip, WayPoint
 from log_book.util.haversine import distance as haversine_distance
+from log_book.util.misc import TripEntity
 
 
 class StreamProcessor(ABCStreamProcessor):
@@ -43,7 +44,7 @@ class StreamProcessor(ABCStreamProcessor):
             if len(self.way_points) > 1 and \
                                     waypoint.timestamp - self.way_points[-1].timestamp > MAX_TIME_WITHOUT_MOVEMENT:
                 self.trip.end = self.way_points[-1]
-                return Trip(start=self.trip.start, end=self.trip.end, distance=self.trip.distance)
+                return self.trip.to_trip()
         else:
             if self.trip.start is None:
                 self.trip.start = WayPoint(lat=self.way_points[-1].lat,
