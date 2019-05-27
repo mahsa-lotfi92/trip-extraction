@@ -41,7 +41,7 @@ class StreamProcessor(ABCStreamProcessor):
             pass
 
         elif waypoint.is_near(self.way_points[-1]):
-            if len(self.way_points) > 1 and \
+            if self.trip.start is not None and \
                                     waypoint.timestamp - self.way_points[-1].timestamp > MAX_TIME_WITHOUT_MOVEMENT:
                 self.trip.end = self.way_points[-1]
                 return self.trip.to_trip()

@@ -49,11 +49,14 @@ class StreamProcessorTest(unittest.TestCase):
         _get_distance_mock.side_effect = update_distance
 
         def run1():
-            p1 = WayPoint(lat=1, lng=1, timestamp=datetime(year=2019, month=12, day=12))
+            p0 = WayPoint(lat=1, lng=1, timestamp=datetime(year=2019, month=12, day=12, second=0))
+            p1 = WayPoint(lat=1, lng=1, timestamp=datetime(year=2019, month=12, day=12, second=5))
             p2 = WayPoint(lat=1.001, lng=1.001, timestamp=datetime(year=2019, month=12, day=12, second=10))
             p3 = WayPoint(lat=1.002, lng=1.002, timestamp=datetime(year=2019, month=12, day=12, second=20))
-            p4 = WayPoint(lat=1.002, lng=1.002, timestamp=datetime(year=2019, month=12, day=12, minute=4))
+            p4 = WayPoint(lat=1.002000001, lng=1.002000001, timestamp=datetime(year=2019, month=12, day=12, minute=1))
+            p5 = WayPoint(lat=1.002000001, lng=1.002000001, timestamp=datetime(year=2019, month=12, day=12, minute=4))
 
+            uut.process_waypoint(p0)
             uut.process_waypoint(p1)
             result = uut.process_waypoint(p2)
             expected = None
@@ -63,7 +66,8 @@ class StreamProcessorTest(unittest.TestCase):
             expected = None
             self.assertEqual(expected, result)
 
-            result = uut.process_waypoint(p4)
+            uut.process_waypoint(p4)
+            result = uut.process_waypoint(p5)
 
             self.assertEqual(p1, result.start)
             self.assertEqual(0, result.distance)
@@ -71,8 +75,9 @@ class StreamProcessorTest(unittest.TestCase):
 
         run1()
 
-    @patch('log_book.application.stream_processor.haversine_distance', return_value=10)
-    def test_update_distance(self, _):
+    @patch('log_book.application.stream_processor.haversine_distance', return_value=20)
+    @patch('log_book.models.models.haversine_distance', return_value=20)
+    def test_update_distance(self, _, __):
         uut = StreamProcessor()
 
         def run1():
@@ -84,9 +89,22 @@ class StreamProcessorTest(unittest.TestCase):
             uut.process_waypoint(p1)
             uut.process_waypoint(p2)
             uut.process_waypoint(p3)
-            result = uut.process_waypoint(p4)
+            uut.process_waypoint(p4)
 
-            self.assertEqual(20, result.distance)
+            self.assertEqual(60, uut.trip.distance)
 
         run1()
 
+    @patch('log_book.application.stream_processor.StreamProcessor.get_last_velocity', return_value=40)
+    def test_jump(self, _):
+        uut = StreamProcessor()
+
+        def run1():
+            p0 = WayPoint(lat=1, lng=1, timestamp=datetime(year=2019, month=12, day=12, second=0))
+            p1 = WayPoint(lat=1, lng=1, timestamp=datetime(year=2019, month=12, day=12, second=5))
+            uut.process_waypoint(p0)
+            uut.process_waypoint(p1)
+            self.assertEqual(1, len(uut.way_points))
+            self.assertEqual(0, uut.trip.distance)
+
+        run1()
