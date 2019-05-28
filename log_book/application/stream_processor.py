@@ -41,6 +41,8 @@ class StreamProcessor(ABCStreamProcessor):
             pass
 
         elif waypoint.is_near(self.last_way_point):
+            # if the points are close to each other less than 15 meters, the new point should not be count as movement
+            # and if there is more than 3 minutes that vehicle did not move, the trip should be ended.
             if self.trip.start is not None and \
                                     waypoint.timestamp - self.last_way_point.timestamp > MAX_TIME_WITHOUT_MOVEMENT:
                 self.trip.end = self.last_way_point
@@ -50,6 +52,7 @@ class StreamProcessor(ABCStreamProcessor):
                 self.trip.start = WayPoint(lat=self.last_way_point.lat,
                                            lng=self.last_way_point.lng,
                                            timestamp=self.last_time_updated)
+                # to handle the start time of the trip should as soon as the vehicle moves
 
             self.update_distance(waypoint)
             self.last_way_point = waypoint

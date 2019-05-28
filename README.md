@@ -14,6 +14,8 @@ longer than 3 minutes
 ## Run
 1- Create virtual environment with python3
 
+    virtualenv -p python3 env
+
 2- Activate virtual environment. 
 
     source env_name/bin/activate
@@ -26,9 +28,9 @@ longer than 3 minutes
    
 5- To run the project, in the root of projects, call:
 
-    python extract_trips.py file_name
+    python extract_trips.py sample_waypoints.json
    
-where file_name is the name of the file which contains waypoints.
+where sample_waypoints.json is the name of the file which contains waypoints.
 The file should be placed at the root of project.
    
    

@@ -32,6 +32,9 @@ class WayPoint(NamedTuple):
     def __repr__(self):
         return '(lat:{}, lng:{}, time:{})'.format(self.lat, self.lng, self.timestamp)
 
+    def __eq__(self, other):
+        return self.lat == other.lat and self.lng == other.lng and self.timestamp == other.timestamp
+
     def to_dict(self):
         return {'timestamp': self.timestamp,
                 'lat': self.lat,

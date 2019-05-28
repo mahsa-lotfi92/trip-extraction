@@ -18,12 +18,17 @@ def runner():
         print('Please provide a file name to read the waypoint data')
         sys.exit(1)
 
-    with open(sys.argv[1]) as json_file:
-        try:
-            way_points = json.loads(json_file.read())
-            trips = process_way_points(way_points)
-            with open("trips.json", 'w') as trips_file:
-                trips_file.write(json.dumps(trips, cls=Encoder))
-        except JSONDecodeError:
-            print('Input file should be json file.')
-            sys.exit(1)
+    try:
+        with open(sys.argv[1]) as json_file:
+            try:
+                way_points = json.loads(json_file.read())
+                trips = process_way_points(way_points)
+                with open("trips.json", 'w') as trips_file:
+                    trips_file.write(json.dumps(trips, cls=Encoder))
+            except JSONDecodeError:
+                print('Input file should be json file.')
+                sys.exit(1)
+
+    except FileNotFoundError:
+        print('The file {} is not found.'.format(sys.argv[1]))
+        sys.exit(1)
