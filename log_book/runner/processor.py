@@ -12,6 +12,5 @@ def process_way_points(way_points: List[WayPoint]):
         trip = processor.process_waypoint(way_point)
         if trip:
             trips.append(trip.to_dict())
-            print(trip)
     return trips
 
