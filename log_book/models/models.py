@@ -4,7 +4,7 @@ from typing import NamedTuple, Dict
 from log_book.config.static_values import IGNORE_DISTANCE
 from log_book.util.haversine import distance as haversine_distance
 
-
+TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 class WayPoint(NamedTuple):
     timestamp: datetime
     lat: float
@@ -13,12 +13,17 @@ class WayPoint(NamedTuple):
     @staticmethod
     def create_from_dict(obj: Dict):
         if not isinstance(obj, dict):
-            return None
+            raise Exception('Waypoint can be created from dict.')
 
         lat = obj['lat']
         lng = obj['lng']
-        timestamp = datetime.strptime(obj['timestamp'], '%Y-%m-%dT%H:%M:%SZ')
+        timestamp = datetime.strptime(obj['timestamp'], TIME_FORMAT)
         return WayPoint(timestamp=timestamp, lat=lat, lng=lng)
+
+    @staticmethod
+    def get_velocity(start, end) -> float:
+        time_passed = (end.timestamp - start.timestamp).seconds
+        return haversine_distance(start, end) / time_passed if time_passed > 0 else 0
 
     def is_near(self, waypoint2) -> bool:
         assert isinstance(waypoint2, WayPoint)

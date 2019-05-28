@@ -11,7 +11,7 @@ class StreamProcessorTest(unittest.TestCase):
     def test_get_last_velocity(self, process_waypint_mock):
         uut = StreamProcessor()
         def process_waypoint(waypoint):
-            uut.way_points.append(waypoint)
+            uut.last_way_point = waypoint
             return
 
         process_waypint_mock.side_effect = process_waypoint
@@ -43,7 +43,7 @@ class StreamProcessorTest(unittest.TestCase):
     def test_process_waypoint(self, _get_distance_mock, _):
         uut = StreamProcessor()
 
-        def update_distance():
+        def update_distance(new_point):
             pass
 
         _get_distance_mock.side_effect = update_distance
@@ -104,7 +104,7 @@ class StreamProcessorTest(unittest.TestCase):
             p1 = WayPoint(lat=1, lng=1, timestamp=datetime(year=2019, month=12, day=12, second=5))
             uut.process_waypoint(p0)
             uut.process_waypoint(p1)
-            self.assertEqual(1, len(uut.way_points))
+            self.assertEqual(p0, uut.last_way_point)
             self.assertEqual(0, uut.trip.distance)
 
         run1()

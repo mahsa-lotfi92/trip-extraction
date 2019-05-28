@@ -16,7 +16,7 @@ class Encoder(json.JSONEncoder):
 def runner():
     if len(sys.argv) <= 1:
         print('Please provide a file name to read the waypoint data')
-        return
+        sys.exit(1)
 
     with open(sys.argv[1]) as json_file:
         try:
@@ -24,7 +24,6 @@ def runner():
             trips = process_way_points(way_points)
             with open("trips.json", 'w') as trips_file:
                 trips_file.write(json.dumps(trips, cls=Encoder))
-                trips_file.close()
         except JSONDecodeError:
             print('Input file should be json file.')
-        json_file.close()
+            sys.exit(1)
